@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace TechJobsConsole
 {
@@ -41,8 +42,9 @@ namespace TechJobsConsole
                     else
                     {
                         List<string> results = JobData.FindAll(columnChoice);
-
+                        results.Sort();
                         Console.WriteLine("\n*** All " + columnChoices[columnChoice] + " Values ***");
+                        
                         foreach (string item in results)
                         {
                             Console.WriteLine(item);
@@ -58,12 +60,14 @@ namespace TechJobsConsole
                     Console.WriteLine("\nSearch term: ");
                     string searchTerm = Console.ReadLine();
 
-                    List<Dictionary<string, string>> searchResults;
+                    List<Dictionary<string, string>> searchResults = new List<Dictionary<string, string>>();
 
                     // Fetch results
                     if (columnChoice.Equals("all"))
                     {
-                        Console.WriteLine("Search all fields not yet implemented.");
+                        searchResults = JobData.FindByValue(searchTerm);
+                        PrintJobs(searchResults);
+
                     }
                     else
                     {
@@ -118,7 +122,32 @@ namespace TechJobsConsole
 
         private static void PrintJobs(List<Dictionary<string, string>> someJobs)
         {
-            Console.WriteLine("printJobs is not implemented yet");
+
+            /*foreach (Dictionary<string, string> job in someJobs)
+            {
+                 Dictionary<string, string>.KeyCollection allKeys =job.Keys;
+                Dictionary<string, string>.ValueCollection allValues = job.Values;
+            foreach (string str in allKeys)
+                  if(str.Contains("name"))
+                      Console.WriteLine(" name: " + str);*/
+
+            /*for(int i = 0; i < allKeys.Count; i++)
+            {
+                if(allKeys.Contains("name"))
+                    Console.WriteLine("name: " + job.ElementAt(i).Value);
+            }*/
+
+            foreach (var dictionary in someJobs)
+            {
+                Console.WriteLine("\n*****");
+                foreach (var keyValue in dictionary)
+                    Console.WriteLine(string.Format("{0}: {1}", keyValue.Key, keyValue.Value));
+                Console.WriteLine("*****");
+            }
+
+            /*}*/
+
         }
+
     }
 }

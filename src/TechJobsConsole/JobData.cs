@@ -2,6 +2,8 @@
 using System.IO;
 using System.Reflection;
 using System.Text;
+using System;
+using System.Linq;
 
 namespace TechJobsConsole
 {
@@ -12,8 +14,8 @@ namespace TechJobsConsole
 
         public static List<Dictionary<string, string>> FindAll()
         {
-            LoadData();
-            return AllJobs;
+            LoadData();            
+            return AllJobs; 
         }
 
         /*
@@ -29,32 +31,59 @@ namespace TechJobsConsole
             foreach (Dictionary<string, string> job in AllJobs)
             {
                 string aValue = job[column];
-
-                if (!values.Contains(aValue))
+                if (!values.Contains(aValue,StringComparer.OrdinalIgnoreCase))
                 {
                     values.Add(aValue);
                 }
             }
             return values;
         }
+        public static List<Dictionary<string, string>> FindByValue(string searchTerm)
+        {
+            LoadData();
 
+            List<Dictionary<string, string>> allValues = new List<Dictionary<string, string>>();
+            int count = 0;
+            
+            foreach (Dictionary<string, string> some in AllJobs)
+            {
+                foreach (string searchValue in some.Values)
+                {
+                    if (searchValue.ToLower().Contains(searchTerm.ToLower()))
+                    {
+                        count += 1;
+                        allValues.Add(some);
+                        break;
+                    }
+                }
+            }
+            
+            if (count == 0)
+                Console.WriteLine("No such Values Found");
+                        
+            return allValues;
+
+        }
         public static List<Dictionary<string, string>> FindByColumnAndValue(string column, string value)
         {
             // load data, if not already loaded
             LoadData();
 
             List<Dictionary<string, string>> jobs = new List<Dictionary<string, string>>();
+            int count = 0;
 
             foreach (Dictionary<string, string> row in AllJobs)
             {
                 string aValue = row[column];
 
-                if (aValue.Contains(value))
+                if (aValue.ToLower().Contains(value.ToLower()))
                 {
+                    count += 1;
                     jobs.Add(row);
                 }
             }
-
+            if (count == 0)
+                Console.WriteLine("No such values found");
             return jobs;
         }
 
@@ -138,5 +167,6 @@ namespace TechJobsConsole
 
             return rowValues.ToArray();
         }
+        
     }
 }
